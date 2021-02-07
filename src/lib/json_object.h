@@ -21,7 +21,7 @@ namespace json {
 
         union json_value {
             std::string str;
-            std::map<std::string, json_object> map;
+            std::map<std::string, json_object> o_map;
             std::vector<json_object> vec;
             double fp_number;
             int64_t i_number;
@@ -34,7 +34,7 @@ namespace json {
 
             std::string& get_string();
             std::map<std::string, json_object>& get_map();
-            std::vector<json_object> get_array();
+            std::vector<json_object>& get_array();
             double get_double();
             int64_t get_int();
             bool get_bool();
