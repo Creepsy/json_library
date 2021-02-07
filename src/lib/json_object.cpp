@@ -49,7 +49,7 @@ bool json::objects::json_object::is_double() {
 }
 
 bool json::objects::json_object::is_int() {
-    return this->object_type == value_type::INT_NUM
+    return this->object_type == value_type::INT_NUM;
 }
 
 bool json::objects::json_object::is_bool() {
