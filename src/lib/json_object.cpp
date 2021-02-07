@@ -2,6 +2,10 @@
 
 #include <system_error>
 
+json::objects::json_value::~json_value() {
+
+}
+
 std::string& json::objects::json_object::get_string() {
     if(this->object_type != value_type::STR) throw std::runtime_error("JSON object isn't a string!");
     return this->val.str;
@@ -58,4 +62,21 @@ bool json::objects::json_object::is_bool() {
 
 bool json::objects::json_object::is_null() {
     return this->object_type == value_type::NONE;
+}
+
+json::objects::json_object::~json_object() {
+    switch (this->object_type) {
+        case value_type::MAP:
+            this->val.o_map.~map();
+            break;
+        case value_type::STR:
+            this->val.str.~basic_string();
+            break;
+        case value_type::VEC:
+            this->val.vec.~vector();
+            break;
+        default:
+            break;
+    }
+    
 }

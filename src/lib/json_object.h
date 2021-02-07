@@ -26,6 +26,8 @@ namespace json {
             double fp_number;
             int64_t i_number;
             bool boolean;
+
+            ~json_value();
         };
 
         struct json_object {
@@ -46,6 +48,8 @@ namespace json {
             bool is_int();
             bool is_bool();
             bool is_null();
+
+            ~json_object();
         };
     }
 }
