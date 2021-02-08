@@ -1,35 +1,34 @@
 #include "json_object.h"
 
 #include <system_error>
-#include <cstring>
 
 std::string& json::objects::json_object::get_string() {
-    if(this->object_type != value_type::STR) throw std::runtime_error("JSON object isn't a string!");
+    if(!this->is_string()) throw std::runtime_error("JSON object isn't a string!");
     return *(std::string*)this->data;
 }
 
 std::map<std::string, json::objects::json_object>& json::objects::json_object::get_map() {
-    if(this->object_type != value_type::MAP) throw std::runtime_error("JSON object isn't a map!");
+    if(!this->is_map()) throw std::runtime_error("JSON object isn't a map!");
     return *(std::map<std::string, json::objects::json_object>*)this->data;
 }
 
 std::vector<json::objects::json_object>& json::objects::json_object::get_array() {
-    if(this->object_type != value_type::VEC) throw std::runtime_error("JSON object isn't an array!");
+    if(!this->is_array()) throw std::runtime_error("JSON object isn't an array!");
     return *(std::vector<json::objects::json_object>*)this->data;
 }
 
 double& json::objects::json_object::get_double() {
-    if(this->object_type != value_type::FP_NUM) throw std::runtime_error("JSON object isn't a double!");
+    if(!this->is_double()) throw std::runtime_error("JSON object isn't a double!");
     return *(double*)this->data;
 }
 
 int64_t& json::objects::json_object::get_int() {
-    if(this->object_type != value_type::INT_NUM) throw std::runtime_error("JSON object isn't an int!");
+    if(!this->is_int()) throw std::runtime_error("JSON object isn't an int!");
     return *(int64_t*)this->data;
 }
 
 bool& json::objects::json_object::get_bool() {
-    if(this->object_type != value_type::BOOL) throw std::runtime_error("JSON object isn't a boolean!");
+    if(!this->is_bool()) throw std::runtime_error("JSON object isn't a boolean!");
     return *(bool*)this->data;
 }
 
