@@ -1,39 +1,36 @@
 #include "json_object.h"
 
 #include <system_error>
-
-json::objects::json_value::~json_value() {
-
-}
+#include <cstring>
 
 std::string& json::objects::json_object::get_string() {
     if(this->object_type != value_type::STR) throw std::runtime_error("JSON object isn't a string!");
-    return this->val.str;
+    return *(std::string*)this->data;
 }
 
 std::map<std::string, json::objects::json_object>& json::objects::json_object::get_map() {
     if(this->object_type != value_type::MAP) throw std::runtime_error("JSON object isn't a map!");
-    return this->val.o_map;
+    return *(std::map<std::string, json::objects::json_object>*)this->data;
 }
 
 std::vector<json::objects::json_object>& json::objects::json_object::get_array() {
     if(this->object_type != value_type::VEC) throw std::runtime_error("JSON object isn't an array!");
-    return this->val.vec;
+    return *(std::vector<json::objects::json_object>*)this->data;
 }
 
-double json::objects::json_object::get_double() {
+double& json::objects::json_object::get_double() {
     if(this->object_type != value_type::FP_NUM) throw std::runtime_error("JSON object isn't a double!");
-    return this->val.fp_number;
+    return *(double*)this->data;
 }
 
-int64_t json::objects::json_object::get_int() {
+int64_t& json::objects::json_object::get_int() {
     if(this->object_type != value_type::INT_NUM) throw std::runtime_error("JSON object isn't an int!");
-    return this->val.i_number;
+    return *(int64_t*)this->data;
 }
 
-bool json::objects::json_object::get_bool() {
+bool& json::objects::json_object::get_bool() {
     if(this->object_type != value_type::BOOL) throw std::runtime_error("JSON object isn't a boolean!");
-    return this->val.boolean;
+    return *(bool*)this->data;
 }
 
 bool json::objects::json_object::is_string() {
@@ -64,19 +61,27 @@ bool json::objects::json_object::is_null() {
     return this->object_type == value_type::NONE;
 }
 
-json::objects::json_object::~json_object() {
-    switch (this->object_type) {
-        case value_type::MAP:
-            this->val.o_map.~map();
-            break;
+json::objects::json_object::json_object(value_type object_type) : data{}, object_type{object_type} {
+    switch(object_type) {
         case value_type::STR:
-            this->val.str.~basic_string();
+            *(std::string*)this->data = std::string();
+            break;
+        case value_type::BOOL:
+            *(bool*)this->data = false;
+            break;
+        case value_type::FP_NUM:
+            *(double*)this->data = 0.0;
+            break;
+        case value_type::INT_NUM:
+            *(int64_t*)this->data = 0;
+            break;
+        case value_type::MAP:
+            *(std::map<std::string, json_object>*)this->data = std::map<std::string, json_object>();
             break;
         case value_type::VEC:
-            this->val.vec.~vector();
+            *(std::vector<json_object>*)this->data = std::vector<json_object>();
             break;
         default:
             break;
     }
-    
 }

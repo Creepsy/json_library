@@ -1,7 +1,9 @@
 #include <iostream>
 
+#include "lib/json_object.h"
+
 int main() {
-    std::cout << "test" << std::endl;
+    json::objects::json_object object{json::objects::value_type::VEC};
 
     return 0;
 }
