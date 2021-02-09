@@ -42,4 +42,5 @@ namespace json {
         json_object(value_type object_type);
     };
 
+    std::ostream& operator<<(std::ostream& stream, json_object& obj);
 }

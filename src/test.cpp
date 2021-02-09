@@ -3,12 +3,16 @@
 #include "lib/json.h"
 
 int main() {
-    json::json_object object{json::value_type::VEC};
+    json::json_object object{json::value_type::MAP};
 
-    object.get_array().push_back(json::json_object{json::value_type::INT_NUM});
-    object.get_array().at(0).get_int() = 10;
+    object.get_map().insert(std::make_pair("test", json::json_object{json::value_type::VEC}));
 
-  //  std::cout << object << std::endl;
+    for(int i = 0; i < 10; i++) {
+        object.get_map().at("test").get_array().push_back(json::json_object{json::value_type::INT_NUM});
+        object.get_map().at("test").get_array().at(i).get_int() = i;
+    }
+
+    std::cout << object << std::endl;
 
     return 0;
 }

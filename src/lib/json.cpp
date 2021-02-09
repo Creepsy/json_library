@@ -84,3 +84,38 @@ json::json_object::json_object(value_type object_type) : data{}, object_type{obj
             break;
     }
 }
+
+std::ostream& json::operator<<(std::ostream& stream, json_object& obj) {
+    switch(obj.object_type) {
+        case value_type::STR:
+            return stream << '"' << obj.get_string() << '"';
+        case value_type::BOOL:
+            return stream << (obj.get_bool() ? "true" : "false");
+        case value_type::FP_NUM:
+            return stream << obj.get_double();
+        case value_type::INT_NUM:
+            return stream << obj.get_int();
+        case value_type::MAP:
+            stream << "{";
+            {
+                size_t pos = 0;
+                for(std::pair<const std::string, json_object>& sub_obj : obj.get_map()) {
+                    if(pos != 0) stream << ", ";
+                    stream << '"' << sub_obj.first << '"' << " : " << sub_obj.second;
+                   pos++;
+                }    
+            }
+            return stream << "}";
+        case value_type::VEC:
+            stream << "[";
+            for(size_t i = 0; i < obj.get_array().size(); i++) {
+                if(i != 0) stream << ", ";
+                stream << obj.get_array().at(i);
+            }
+            return stream << "]";
+        case value_type::NONE:
+            return stream << "null";
+    }
+
+    return stream;
+}
