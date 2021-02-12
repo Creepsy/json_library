@@ -4,57 +4,12 @@
 
 //private helper functions
 
-std::ostream& write_intendations(std::ostream& stream, size_t intendation_count) {
-    for(size_t i = 0; i < intendation_count; i++) {
-        stream << '\t';
+std::ostream& write_intendations(std::ostream& stream, const size_t intendation_count, const size_t intendation_size) {
+    for(size_t i = 0; i < intendation_count * intendation_size; i++) {
+        stream << ' ';
     }
     return stream;
 }
-
-std::ostream& write_json_object(std::ostream& stream, json::json_object& obj, size_t intendation_count) {
-    switch(obj.object_type) {
-        case json::value_type::STR:
-            return stream << '"' << obj.get_string() << '"';
-        case json::value_type::BOOL:
-            return stream << (obj.get_bool() ? "true" : "false");
-        case json::value_type::FP_NUM:
-            return stream << obj.get_double();
-        case json::value_type::INT_NUM:
-            return stream << obj.get_int();
-        case json::value_type::MAP:
-            stream << "{" << std::endl;
-            {
-                size_t pos = 0;
-                for(std::pair<const std::string, json::json_object>& sub_obj : obj.get_map()) {
-                    if(pos != 0) stream << ", " << std::endl;
-                    write_intendations(stream, intendation_count + 1);
-                    stream << '"' << sub_obj.first << '"' << ": ";
-                    write_json_object(stream, sub_obj.second, intendation_count + 1);
-                    pos++;
-                }    
-            }
-            stream << std::endl;
-            write_intendations(stream, intendation_count);
-            return stream << "}";
-        case json::value_type::VEC:
-            stream << "[" << std::endl;
-            for(size_t i = 0; i < obj.get_array().size(); i++) {
-                if(i != 0) stream << ", " << std::endl;
-                write_intendations(stream, intendation_count + 1);
-                write_json_object(stream, obj.get_array().at(i), intendation_count + 1);
-                
-            }
-            stream << std::endl;
-            write_intendations(stream, intendation_count);
-            return stream << "]";
-        case json::value_type::NONE:
-            return stream << "null";
-    }
-
-    return stream;
-}
-
-
 
 std::string& json::json_object::get_string() {
     if(!this->is_string()) throw std::runtime_error("JSON object isn't a string!");
@@ -114,6 +69,60 @@ bool json::json_object::is_null() {
     return this->object_type == value_type::NONE;
 }
 
+std::ostream& json::json_object::pretty_print(std::ostream& stream, const size_t intendation_size, const bool whitespace, size_t intendation_count) {
+    switch(this->object_type) {
+        case json::value_type::STR:
+            return stream << '"' << this->get_string() << '"';
+        case json::value_type::BOOL:
+            return stream << (this->get_bool() ? "true" : "false");
+        case json::value_type::FP_NUM:
+            return stream << this->get_double();
+        case json::value_type::INT_NUM:
+            return stream << this->get_int();
+        case json::value_type::MAP:
+            stream << "{";
+            if(whitespace) stream << std::endl;
+            {
+                size_t pos = 0;
+                for(std::pair<const std::string, json::json_object>& sub_obj : this->get_map()) {
+                    if(pos != 0) {
+                        stream << ", ";
+                        if(whitespace) stream << std::endl;
+                    }
+                    if(whitespace) write_intendations(stream, intendation_count + 1, intendation_size);
+                    stream << '"' << sub_obj.first << '"' << ": ";
+                    sub_obj.second.pretty_print(stream, intendation_size, whitespace, intendation_count + 1);
+                    pos++;
+                }    
+            }
+            if(whitespace) {
+                stream << std::endl;
+                write_intendations(stream, intendation_count, intendation_size);
+            } 
+            return stream << "}";
+        case json::value_type::VEC:
+            stream << "[";
+            if(whitespace) stream << std::endl;
+            for(size_t i = 0; i < this->get_array().size(); i++) {
+                if(i != 0) {
+                    stream << ", ";
+                    if(whitespace) stream << std::endl;
+                }
+                if(whitespace) write_intendations(stream, intendation_count + 1, intendation_size);
+                this->get_array().at(i).pretty_print(stream, intendation_size, whitespace, intendation_count + 1);
+            }
+            if(whitespace) {
+                stream << std::endl;
+                write_intendations(stream, intendation_count, intendation_size);
+            }
+            return stream << "]";
+        case json::value_type::NONE:
+            return stream << "null";
+    }
+
+    return stream;
+}
+
 json::json_object::json_object(value_type object_type) : data{}, object_type{object_type} {
     switch(object_type) {
         case value_type::STR:
@@ -140,5 +149,5 @@ json::json_object::json_object(value_type object_type) : data{}, object_type{obj
 }
 
 std::ostream& json::operator<<(std::ostream& stream, json_object& obj) {
-    return write_json_object(stream, obj, 0);
+    return obj.pretty_print(stream);
 }

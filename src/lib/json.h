@@ -39,6 +39,8 @@ namespace json {
         bool is_bool();
         bool is_null();
 
+        std::ostream& pretty_print(std::ostream& stream, const size_t intendation_size = 4, const bool whitespace = true, size_t intendation_count = 0);
+
         json_object(value_type object_type);
     };
 

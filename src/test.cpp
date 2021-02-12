@@ -14,6 +14,8 @@ int main() {
         }
     }
     object.get_map().insert(std::make_pair("is_true", json::json_object{json::value_type::BOOL}));
+    object.get_map().insert(std::make_pair("empty", json::json_object{json::value_type::VEC}));
+    object.get_map().insert(std::make_pair("none", json::json_object{json::value_type::NONE}));
 
     std::cout << object << std::endl;
 
