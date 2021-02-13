@@ -22,7 +22,7 @@ namespace json {
 
     class json_object {
         private:
-            const value_type object_type;
+            value_type object_type;
             char data[DATA_SIZE];
         
         public:
@@ -43,8 +43,10 @@ namespace json {
 
             std::ostream& pretty_print(std::ostream& stream, const size_t intendation_size = 4, const bool whitespace = true, size_t intendation_count = 0);
 
+            json_object();
             json_object(value_type object_type);
-            ~json_object() = default;
+            json_object(const json_object& other);
+            ~json_object();
     };
 
     std::ostream& operator<<(std::ostream& stream, json_object& obj);

@@ -89,6 +89,7 @@ std::ostream& json::json_object::pretty_print(std::ostream& stream, const size_t
                         stream << ", ";
                         if(whitespace) stream << std::endl;
                     }
+
                     if(whitespace) write_intendations(stream, intendation_count + 1, intendation_size);
                     stream << '"' << sub_obj.first << '"' << ": ";
                     sub_obj.second.pretty_print(stream, intendation_size, whitespace, intendation_count + 1);
@@ -123,10 +124,15 @@ std::ostream& json::json_object::pretty_print(std::ostream& stream, const size_t
     return stream;
 }
 
+json::json_object::json_object() : data{}, object_type{value_type::NONE} {
+
+}
+
 json::json_object::json_object(value_type object_type) : data{}, object_type{object_type} {
     switch(object_type) {
         case value_type::STR:
-            *(std::string*)this->data = std::string();
+            //*(std::string*)this->data = std::string(); //TODO -> REEEEEEE
+            new(this->data) std::string;
             break;
         case value_type::BOOL:
             *(bool*)this->data = false;
@@ -138,10 +144,55 @@ json::json_object::json_object(value_type object_type) : data{}, object_type{obj
             *(int64_t*)this->data = 0;
             break;
         case value_type::MAP:
-            *(std::map<std::string, json_object>*)this->data = std::map<std::string, json_object>();
+            //*(std::map<std::string, json_object>*)this->data = std::map<std::string, json_object>();
+            new(this->data)std::map<std::string, json_object>;
             break;
         case value_type::VEC:
-            *(std::vector<json_object>*)this->data = std::vector<json_object>();
+            //*(std::vector<json_object>*)this->data = std::vector<json_object>();
+            new(this->data)std::vector<json_object>;
+            break;
+        default:
+            break;
+    }
+}
+
+json::json_object::json_object(const json_object& other) : data{}, object_type{other.object_type} {
+    switch(object_type) {
+        case value_type::STR:
+            new(this->data)std::string(*(std::string*)other.data);
+            break;
+        case value_type::BOOL:
+            *(bool*)this->data = *(bool*)other.data;
+            break;
+        case value_type::FP_NUM:
+            *(double*)this->data = *(double*)other.data;
+            break;
+        case value_type::INT_NUM:
+            *(int64_t*)this->data = *(int64_t*)other.data;
+            break;
+        case value_type::MAP:
+            //*(std::map<std::string, json_object>*)this->data = *(std::map<std::string, json_object>*)other.data;
+            new(this->data)std::map<std::string, json_object>(*(std::map<std::string, json_object>*)other.data);
+            break;
+        case value_type::VEC:
+           // *(std::vector<json_object>*)this->data = *(std::vector<json_object>*)other.data;
+            new(this->data)std::vector<json_object>(*(std::vector<json_object>*)other.data);
+            break;
+        default:
+            break;
+    }
+}
+
+json::json_object::~json_object() {
+    switch(object_type) {
+        case value_type::STR:
+            (*(std::string*)this->data).~basic_string();
+            break;
+        case value_type::MAP:
+            (*(std::map<std::string, json_object>*)this->data).~map();
+            break;
+        case value_type::VEC:
+            (*(std::vector<json_object>*)this->data).~vector();
             break;
         default:
             break;
