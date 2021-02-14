@@ -13,5 +13,11 @@
         "name": "redwood",
         "height": 50,
         "age": 240
+    },
+    null,
+    {
+        "name": "birch",
+        "height": -0.2,
+        "old": true
     }
 ]

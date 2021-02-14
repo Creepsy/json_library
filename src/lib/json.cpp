@@ -131,7 +131,6 @@ json::json_object::json_object() : data{}, object_type{value_type::NONE} {
 json::json_object::json_object(value_type object_type) : data{}, object_type{object_type} {
     switch(object_type) {
         case value_type::STR:
-            //*(std::string*)this->data = std::string(); //TODO -> REEEEEEE
             new(this->data) std::string;
             break;
         case value_type::BOOL:

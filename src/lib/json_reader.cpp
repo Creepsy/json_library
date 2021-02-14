@@ -48,7 +48,7 @@ std::string json::json_reader::next_number_from_stream(std::istream& stream, boo
     std::string num;
     is_double = false;
 
-    while((std::isdigit(curr) || curr == '.') && stream.good()) {
+    while((std::isdigit(curr) || curr == '.' || curr == '+' || curr == '-') && stream.good()) {
         if(curr == '.') {
             if(is_double) throw std::runtime_error("Invalid number format!");
             is_double = true;
@@ -70,7 +70,7 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
     if(stream.fail()) throw std::runtime_error("Reached EOF while parsing json object!");
     stream.seekg(-1, std::ios::cur);
 
-    if(first == '.' || std::isdigit(first)) {
+    if(first == '.' || first == '+' || first == '-' || std::isdigit(first)) {
         bool is_double = false;
         std::string num = next_number_from_stream(stream, is_double);
 
@@ -109,7 +109,9 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
             }
         }
 
+        //remove_whitespaces(stream);
         char next = stream.get();
+      //  std::cout << next << std::endl;
         if(next != ']') throw std::runtime_error("Expected ] while parsing array!");
 
         return builder.build();
@@ -140,12 +142,32 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
             }
         }
         
+       // remove_whitespaces(stream);
         char next = stream.get();
         if(next != '}') throw std::runtime_error("Expected } while parsing map!");
 
         return builder.build();
     } else {
-        //TODO: boolean and null
+        std::string identifier;
+        for(int i = 0; i < 4; i++) {
+            identifier += stream.get();
+        }
+
+        if(stream.fail()) throw std::runtime_error("EOF while parsing identifier!");
+
+        if(identifier == "null") {
+            return json_object{value_type::NONE};
+        } else {    
+            if(identifier == "true") {
+                json_object obj{value_type::BOOL};
+                obj.get_bool() = true;
+                return obj;
+            } else if(identifier == "fals" && stream.get() == 'e') {
+                json_object obj{value_type::BOOL};
+                obj.get_bool() = false;
+                return obj;
+            }
+        }
     }
 
     throw std::runtime_error("No valid json object!");
