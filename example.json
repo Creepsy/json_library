@@ -1,0 +1,18 @@
+[
+    {
+        "name": "oak",
+        "height": 7.5,
+        "age": 100
+    },
+    {
+        "name": "pine",
+        "height": 4.5,
+        "age": 25
+    },
+    {
+        "name": "redwood",
+        "height": 50,
+        "age": 240,
+        "old": true
+    }
+]
