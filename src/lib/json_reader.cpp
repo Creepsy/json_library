@@ -38,7 +38,6 @@ std::string json::json_reader::next_string_from_stream(std::istream& stream) {
     return str;
 }
 
-//TODO: support for 4.2E+1
 std::string json::json_reader::next_number_from_stream(std::istream& stream, bool& is_double) {
     remove_whitespaces(stream);
     char curr = stream.get();
@@ -48,8 +47,8 @@ std::string json::json_reader::next_number_from_stream(std::istream& stream, boo
     std::string num;
     is_double = false;
 
-    while((std::isdigit(curr) || curr == '.' || curr == '+' || curr == '-') && stream.good()) {
-        if(curr == '.') {
+    while((std::isdigit(curr) || curr == '.' || curr == '+' || curr == '-' || curr == 'e' || curr == 'E') && stream.good()) {
+        if(curr == '.' || curr == 'e' || curr == 'E') {
             if(is_double) throw std::runtime_error("Invalid number format!");
             is_double = true;
 
