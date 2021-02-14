@@ -18,9 +18,7 @@ int main() {
         return 1;
     }
 
-   // std::cout << json::json_reader::construct_json_from_stream(stream) << std::endl; //TODO: add print support for const types!!! / temp refrence
-    //TODO: disallow comma after last element
-    json::json_object obj = json::json_reader::next_object_from_stream(file);
+    const json::json_object obj = json::json_reader::next_object_from_stream(file);
 
     /*for(int t = 0; t < obj.get_array().size(); t++) {
         if(t != 0) std::cout << "==========================" << std::endl;

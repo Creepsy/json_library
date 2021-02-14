@@ -171,9 +171,3 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
 
     throw std::runtime_error("No valid json object!");
 }
-
-
-std::istream& json::json_reader::operator>>(std::istream& stream, json::json_object& obj) {
-    obj = next_object_from_stream(stream);
-    return stream;
-}
