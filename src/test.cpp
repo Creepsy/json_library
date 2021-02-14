@@ -10,7 +10,7 @@ int main() {
    
   //  std::cout << object << std::endl;
 
-    std::stringstream stream{"[2, 3.5, 23, \" test sdfkjhsdfk 2.41äö\"]"};
+    std::stringstream stream{"[2, 3.5, 23, \" test sdfkjhsdfk 2.41\"]"};
 
    // std::cout << json::json_reader::construct_json_from_stream(stream) << std::endl; //TODO: add print support for const types!!!
     json::json_object obj = json::json_reader::next_object_from_stream(stream);

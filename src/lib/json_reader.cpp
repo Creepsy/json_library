@@ -123,7 +123,7 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
         //TODO: boolean and null
     }
 
-    throw std::runtime_error("No json valid object!");
+    throw std::runtime_error("No valid json object!");
 }
 
 
