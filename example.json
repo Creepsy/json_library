@@ -12,7 +12,6 @@
     {
         "name": "redwood",
         "height": 50,
-        "age": 240,
-        "old": true
+        "age": 240
     }
 ]
