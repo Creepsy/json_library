@@ -1,4 +1,4 @@
-args = -g -O3
+args = -g
 
 test: build/test.o build/json.o build/json_builder.o build/json_reader.o
 	g++ build/test.o -o test build/json.o build/json_builder.o build/json_reader.o $(args)

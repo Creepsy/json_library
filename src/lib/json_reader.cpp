@@ -110,13 +110,38 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
         }
 
         char next = stream.get();
-        stream.seekg(-1, std::ios::cur);
         if(next != ']') throw std::runtime_error("Expected ] while parsing array!");
 
         return builder.build();
     } else if(first == '{') {
         stream.get();
         json_builder::map_builder builder{};
+
+        while(true) {
+            json_object key, value;
+            try {
+                key = next_object_from_stream(stream);
+            } catch(std::exception& e) {
+                break;
+            }   
+            remove_whitespaces(stream);
+            if(stream.get() != ':') throw std::runtime_error("Expected : while parsing map pair!");
+            try {
+                value = next_object_from_stream(stream);
+            } catch(std::exception& e) {
+                break;
+            }
+            builder.with_object(key.get_string(), value);
+
+            remove_whitespaces(stream);
+            if(stream.get() != ',') {
+                stream.seekg(-1, std::ios::cur);
+                break;
+            }
+        }
+        
+        char next = stream.get();
+        if(next != '}') throw std::runtime_error("Expected } while parsing map!");
 
         return builder.build();
     } else {

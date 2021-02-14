@@ -1,5 +1,5 @@
 #include <iostream>
-#include <sstream>
+#include <fstream>
 
 #include "lib/json.h"
 #include "lib/json_builder.h"
@@ -10,11 +10,20 @@ int main() {
    
   //  std::cout << object << std::endl;
 
-    std::stringstream stream{"[2, 3.5, 23, \" test sdfkjhsdfk 2.41\"]"};
+    std::ifstream file;
+    file.open("example.json");
 
-   // std::cout << json::json_reader::construct_json_from_stream(stream) << std::endl; //TODO: add print support for const types!!!
-    json::json_object obj = json::json_reader::next_object_from_stream(stream);
+    if(!file.is_open()) {
+        std::cerr << "Unable to open file!" << std::endl;
+        return 1;
+    }
+
+   // std::cout << json::json_reader::construct_json_from_stream(stream) << std::endl; //TODO: add print support for const types!!! / temp refrence
+
+    json::json_object obj = json::json_reader::next_object_from_stream(file);
     std::cout << obj << std::endl;
 
+    file.close();
+    
     return 0;
 }
