@@ -93,6 +93,14 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
         stream.get();
         json_builder::array_builder builder{};
 
+        char next = stream.get();
+        stream.seekg(-1, std::ios::cur);
+
+        if(next == ']') {
+            stream.get();
+            return builder.build();
+        }
+
         while(true) {
             try {
                 json_object member = next_object_from_stream(stream);
@@ -109,7 +117,7 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
         }
 
         //remove_whitespaces(stream);
-        char next = stream.get();
+        next = stream.get();
       //  std::cout << next << std::endl;
         if(next != ']') throw std::runtime_error("Expected ] while parsing array!");
 
@@ -117,6 +125,14 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
     } else if(first == '{') {
         stream.get();
         json_builder::map_builder builder{};
+
+        char next = stream.get();
+        stream.seekg(-1, std::ios::cur);
+
+        if(next == '}') {
+            stream.get();
+            return builder.build();
+        }
 
         while(true) {
             json_object key, value;
@@ -142,11 +158,11 @@ json::json_object json::json_reader::next_object_from_stream(std::istream& strea
         }
         
        // remove_whitespaces(stream);
-        char next = stream.get();
+        next = stream.get();
         if(next != '}') throw std::runtime_error("Expected } while parsing map!");
 
         return builder.build();
-    } else {
+    } else if(std::isalpha(first)) {
         std::string identifier;
         for(int i = 0; i < 4; i++) {
             identifier += stream.get();
