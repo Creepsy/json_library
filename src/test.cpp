@@ -11,14 +11,20 @@ int main() {
   //  std::cout << object << std::endl;
 
     std::ifstream file;
-    file.open("example.json");
+    file.open("../example.json");
 
     if(!file.is_open()) {
         std::cerr << "Unable to open file!" << std::endl;
         return 1;
     }
 
-    const json::json_object obj = json::json_reader::next_object_from_stream(file);
+    json::json_object obj = json::json_reader::next_object_from_stream(file);
+
+   /* json::json_builder::map_builder builder{};
+
+    for(int i = 0; i < 10; i++) {
+        builder = json::json_builder::map_builder{}.with_object("Turtle", builder.build());
+    }*/
 
     /*for(int t = 0; t < obj.get_array().size(); t++) {
         if(t != 0) std::cout << "==========================" << std::endl;
