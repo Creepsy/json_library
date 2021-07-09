@@ -13,4 +13,8 @@ set(JSON_LIBRARY_FILES
     src/lib/json.h
 )
 
+set(JSON_LIBRARY_INCLUDE_DIR
+    src/lib/
+)
+
 add_executable(test src/test.cpp ${JSON_LIBRARY_FILES})
